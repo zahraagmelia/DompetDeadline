@@ -69,7 +69,6 @@ public class TransactionRepository {
         return transactions;
     }
 
-    // Mengubah transaksi
     public void updateTransaction(Transaction transaction)
             throws SQLException {
 
@@ -100,7 +99,6 @@ public class TransactionRepository {
         }
     }
 
-    // Menghapus transaksi
     public void deleteTransaction(int id)
             throws SQLException {
 
@@ -138,6 +136,38 @@ public class TransactionRepository {
 
             try (ResultSet result = statement.executeQuery()) {
                 return result.getInt("balance");
+            }
+        }
+    }
+
+    // Menghitung total pemasukan bulan ini
+    public int getMonthlyIncome() throws SQLException {
+        return getMonthlyTotalByType("Pemasukan");
+    }
+
+    // Menghitung total pengeluaran bulan ini
+    public int getMonthlyExpense() throws SQLException {
+        return getMonthlyTotalByType("Pengeluaran");
+    }
+
+    private int getMonthlyTotalByType(String type)
+            throws SQLException {
+
+        String sql = """
+            SELECT COALESCE(SUM(amount), 0) AS total
+            FROM transactions
+            WHERE substr(date, 1, 7) = ?
+            AND type = ?
+            """;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, YearMonth.now().toString());
+            statement.setString(2, type);
+
+            try (ResultSet result = statement.executeQuery()) {
+                return result.getInt("total");
             }
         }
     }

@@ -139,7 +139,7 @@ public class TransactionPanel extends JPanel {
 
             clearForm();
             loadTransactions();
-            dashboard.perbaruiSaldo();
+            dashboard.perbaruiDashboard();
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(
@@ -230,7 +230,7 @@ public class TransactionPanel extends JPanel {
 
             clearForm();
             loadTransactions();
-            dashboard.perbaruiSaldo();
+            dashboard.perbaruiDashboard();
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(
@@ -273,7 +273,7 @@ public class TransactionPanel extends JPanel {
 
                 clearForm();
                 loadTransactions();
-                dashboard.perbaruiSaldo();
+                dashboard.perbaruiDashboard();
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(

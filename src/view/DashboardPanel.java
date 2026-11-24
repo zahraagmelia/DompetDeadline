@@ -19,6 +19,8 @@ public class DashboardPanel extends JPanel {
     private TransactionRepository transactionRepository;
     private TaskRepository taskRepository;
 
+    private MonthlyChartPanel grafik;
+
     public DashboardPanel() {
 
         transactionRepository = new TransactionRepository();
@@ -33,7 +35,7 @@ public class DashboardPanel extends JPanel {
         );
         judul.setFont(new Font("Arial", Font.BOLD, 24));
         judul.setBorder(
-                BorderFactory.createEmptyBorder(20, 10, 20, 10)
+                BorderFactory.createEmptyBorder(15, 10, 15, 10)
         );
 
         saldo = new JLabel("", SwingConstants.CENTER);
@@ -45,15 +47,22 @@ public class DashboardPanel extends JPanel {
         deadline.setFont(fontInfo);
         biaya.setFont(fontInfo);
 
-        JPanel isi = new JPanel(new GridLayout(3, 1, 10, 15));
+        JPanel informasi = new JPanel(new GridLayout(3, 1, 5, 5));
+        informasi.setBackground(new Color(245, 247, 250));
+        informasi.add(saldo);
+        informasi.add(deadline);
+        informasi.add(biaya);
+
+        grafik = new MonthlyChartPanel();
+
+        JPanel isi = new JPanel(new BorderLayout(10, 10));
         isi.setBackground(new Color(245, 247, 250));
         isi.setBorder(
-                BorderFactory.createEmptyBorder(20, 40, 20, 40)
+                BorderFactory.createEmptyBorder(10, 30, 15, 30)
         );
 
-        isi.add(saldo);
-        isi.add(deadline);
-        isi.add(biaya);
+        isi.add(informasi, BorderLayout.NORTH);
+        isi.add(grafik, BorderLayout.CENTER);
 
         add(judul, BorderLayout.NORTH);
         add(isi, BorderLayout.CENTER);
@@ -119,8 +128,24 @@ public class DashboardPanel extends JPanel {
         }
     }
 
+    public void perbaruiGrafik() {
+        try {
+            int pemasukan =
+                    transactionRepository.getMonthlyIncome();
+
+            int pengeluaran =
+                    transactionRepository.getMonthlyExpense();
+
+            grafik.setData(pemasukan, pengeluaran);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void perbaruiDashboard() {
         perbaruiSaldo();
         perbaruiTugas();
+        perbaruiGrafik();
     }
 }
