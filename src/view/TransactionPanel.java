@@ -3,6 +3,7 @@ package view;
 
 import model.Transaction;
 import repository.TransactionRepository;
+import service.CsvExportService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +19,7 @@ public class TransactionPanel extends JPanel {
     private JTextField noteField;
 
     private TransactionRepository repository;
+    private CsvExportService csvExportService;
     private DefaultTableModel tableModel;
     private JTable transactionTable;
     private DashboardPanel dashboard;
@@ -26,6 +28,7 @@ public class TransactionPanel extends JPanel {
 
         this.dashboard = dashboard;
         repository = new TransactionRepository();
+        csvExportService = new CsvExportService();
 
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -101,13 +104,21 @@ public class TransactionPanel extends JPanel {
             }
         });
 
+        // Tombol ekspor CSV
+        JButton exportButton = new JButton("Ekspor CSV");
+
         add(form, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
+        add(exportButton, BorderLayout.SOUTH);
 
         saveButton.addActionListener(e -> saveTransaction());
         clearButton.addActionListener(e -> clearForm());
         editButton.addActionListener(e -> editTransaction());
         deleteButton.addActionListener(e -> deleteTransaction());
+
+        exportButton.addActionListener(
+                e -> csvExportService.exportTransactions()
+        );
 
         loadTransactions();
     }
