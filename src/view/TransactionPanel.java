@@ -20,15 +20,16 @@ public class TransactionPanel extends JPanel {
     private TransactionRepository repository;
     private DefaultTableModel tableModel;
     private JTable transactionTable;
+    private DashboardPanel dashboard;
 
-    public TransactionPanel() {
+    public TransactionPanel(DashboardPanel dashboard) {
 
+        this.dashboard = dashboard;
         repository = new TransactionRepository();
 
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Form transaksi
         JPanel form = new JPanel(new GridLayout(6, 2, 10, 10));
 
         form.add(new JLabel("Jenis Transaksi"));
@@ -58,7 +59,6 @@ public class TransactionPanel extends JPanel {
         form.add(editButton);
         form.add(deleteButton);
 
-        // Tabel transaksi
         String[] columns = {
             "ID", "Jenis", "Tanggal",
             "Jumlah", "Kategori", "Catatan"
@@ -76,7 +76,6 @@ public class TransactionPanel extends JPanel {
         JScrollPane scrollPane =
                 new JScrollPane(transactionTable);
 
-        // Mengambil data ketika baris tabel dipilih
         transactionTable.getSelectionModel()
                 .addListSelectionListener(e -> {
 
@@ -105,7 +104,6 @@ public class TransactionPanel extends JPanel {
         add(form, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Aksi tombol
         saveButton.addActionListener(e -> saveTransaction());
         clearButton.addActionListener(e -> clearForm());
         editButton.addActionListener(e -> editTransaction());
@@ -130,13 +128,8 @@ public class TransactionPanel extends JPanel {
             }
 
             Transaction transaction = new Transaction(
-                    0,
-                    type,
-                    LocalDate.now(),
-                    amount,
-                    category,
-                    note,
-                    null
+                    0, type, LocalDate.now(),
+                    amount, category, note, null
             );
 
             repository.addTransaction(transaction);
@@ -146,6 +139,7 @@ public class TransactionPanel extends JPanel {
 
             clearForm();
             loadTransactions();
+            dashboard.perbaruiSaldo();
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(
@@ -236,6 +230,7 @@ public class TransactionPanel extends JPanel {
 
             clearForm();
             loadTransactions();
+            dashboard.perbaruiSaldo();
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(
@@ -278,6 +273,7 @@ public class TransactionPanel extends JPanel {
 
                 clearForm();
                 loadTransactions();
+                dashboard.perbaruiSaldo();
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(

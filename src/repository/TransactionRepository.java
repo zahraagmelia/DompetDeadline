@@ -5,6 +5,7 @@ import model.Transaction;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.YearMonth;
 
 public class TransactionRepository {
 
@@ -17,10 +18,8 @@ public class TransactionRepository {
             VALUES (?, ?, ?, ?, ?, ?)
             """;
 
-        try (Connection connection =
-                     DatabaseConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, transaction.getType());
             statement.setString(2, transaction.getDate().toString());
@@ -42,20 +41,16 @@ public class TransactionRepository {
             throws SQLException {
 
         List<Transaction> transactions = new ArrayList<>();
-
         String sql = "SELECT * FROM transactions ORDER BY date DESC";
 
-        try (Connection connection =
-                     DatabaseConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql);
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet result = statement.executeQuery()) {
 
             while (result.next()) {
 
                 int taskIdValue = result.getInt("task_id");
-                Integer taskId = result.wasNull()
-                        ? null : taskIdValue;
+                Integer taskId = result.wasNull() ? null : taskIdValue;
 
                 Transaction transaction = new Transaction(
                     result.getInt("id"),
@@ -74,7 +69,6 @@ public class TransactionRepository {
         return transactions;
     }
 
-
     // Mengubah transaksi
     public void updateTransaction(Transaction transaction)
             throws SQLException {
@@ -86,10 +80,8 @@ public class TransactionRepository {
             WHERE id = ?
             """;
 
-        try (Connection connection =
-                     DatabaseConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, transaction.getType());
             statement.setString(2, transaction.getDate().toString());
@@ -104,7 +96,6 @@ public class TransactionRepository {
             }
 
             statement.setInt(7, transaction.getId());
-
             statement.executeUpdate();
         }
     }
@@ -115,14 +106,39 @@ public class TransactionRepository {
 
         String sql = "DELETE FROM transactions WHERE id = ?";
 
-        try (Connection connection =
-                     DatabaseConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, id);
             statement.executeUpdate();
         }
     }
 
+    // Menghitung saldo bulan ini
+    public int getMonthlyBalance() throws SQLException {
+
+        String sql = """
+            SELECT COALESCE(
+                SUM(
+                    CASE
+                        WHEN type = 'Pemasukan' THEN amount
+                        WHEN type = 'Pengeluaran' THEN -amount
+                        ELSE 0
+                    END
+                ), 0
+            ) AS balance
+            FROM transactions
+            WHERE substr(date, 1, 7) = ?
+            """;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, YearMonth.now().toString());
+
+            try (ResultSet result = statement.executeQuery()) {
+                return result.getInt("balance");
+            }
+        }
+    }
 }
