@@ -39,10 +39,12 @@ public class MainFrame extends JFrame {
         // Halaman Transaksi
         TransactionPanel transaksi = new TransactionPanel();
         CategoryPanel kategori = new CategoryPanel();
+        TaskPanel tugas = new TaskPanel();
         
         menu.addTab("Dashboard", dashboard);
         menu.addTab("Transaksi", transaksi);
         menu.addTab("Kategori", kategori);
+        menu.addTab("Tugas", tugas);
         add(menu);
     }
 }
