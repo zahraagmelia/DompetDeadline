@@ -4,16 +4,25 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
+import java.util.List;
+
+import model.Task;
 import repository.TransactionRepository;
+import repository.TaskRepository;
 
 public class DashboardPanel extends JPanel {
 
     private JLabel saldo;
+    private JLabel deadline;
+    private JLabel biaya;
+
     private TransactionRepository transactionRepository;
+    private TaskRepository taskRepository;
 
     public DashboardPanel() {
 
         transactionRepository = new TransactionRepository();
+        taskRepository = new TaskRepository();
 
         setLayout(new BorderLayout(10, 10));
         setBackground(new Color(245, 247, 250));
@@ -28,19 +37,11 @@ public class DashboardPanel extends JPanel {
         );
 
         saldo = new JLabel("", SwingConstants.CENTER);
-        saldo.setFont(new Font("Arial", Font.BOLD, 18));
-
-        JLabel deadline = new JLabel(
-                "Tiga Deadline Terdekat: Belum ada data",
-                SwingConstants.CENTER
-        );
-
-        JLabel biaya = new JLabel(
-                "Total Estimasi Biaya Tugas Aktif: Rp 0",
-                SwingConstants.CENTER
-        );
+        deadline = new JLabel("", SwingConstants.CENTER);
+        biaya = new JLabel("", SwingConstants.CENTER);
 
         Font fontInfo = new Font("Arial", Font.BOLD, 16);
+        saldo.setFont(fontInfo);
         deadline.setFont(fontInfo);
         biaya.setFont(fontInfo);
 
@@ -57,7 +58,7 @@ public class DashboardPanel extends JPanel {
         add(judul, BorderLayout.NORTH);
         add(isi, BorderLayout.CENTER);
 
-        perbaruiSaldo();
+        perbaruiDashboard();
     }
 
     public void perbaruiSaldo() {
@@ -75,5 +76,51 @@ public class DashboardPanel extends JPanel {
             saldo.setText("Saldo Bulan Ini: Gagal dimuat");
             e.printStackTrace();
         }
+    }
+
+    public void perbaruiTugas() {
+        try {
+            List<Task> daftarTugas =
+                    taskRepository.getUpcomingTasks();
+
+            if (daftarTugas.isEmpty()) {
+                deadline.setText(
+                        "Tiga Deadline Terdekat: Belum ada tugas"
+                );
+            } else {
+                StringBuilder teks = new StringBuilder(
+                        "<html><center>Deadline Terdekat:<br>"
+                );
+
+                for (Task tugas : daftarTugas) {
+                    teks.append(tugas.getTitle())
+                        .append(" - ")
+                        .append(tugas.getDeadline())
+                        .append("<br>");
+                }
+
+                teks.append("</center></html>");
+                deadline.setText(teks.toString());
+            }
+
+            int totalBiaya =
+                    taskRepository.getTotalActiveTaskCost();
+
+            biaya.setText(
+                    "Total Estimasi Biaya Tugas Aktif: Rp "
+                    + String.format("%,d", totalBiaya)
+                            .replace(',', '.')
+            );
+
+        } catch (SQLException e) {
+            deadline.setText("Deadline: Gagal dimuat");
+            biaya.setText("Biaya tugas: Gagal dimuat");
+            e.printStackTrace();
+        }
+    }
+
+    public void perbaruiDashboard() {
+        perbaruiSaldo();
+        perbaruiTugas();
     }
 }

@@ -5,6 +5,7 @@ import model.Task;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
 
 public class TaskRepository {
 
@@ -42,7 +43,7 @@ public class TaskRepository {
                     result.getInt("id"),
                     result.getString("title"),
                     result.getString("course"),
-                    java.time.LocalDate.parse(result.getString("deadline")),
+                    LocalDate.parse(result.getString("deadline")),
                     result.getString("priority"),
                     result.getString("status"),
                     result.getInt("estimated_cost")
@@ -86,6 +87,60 @@ public class TaskRepository {
 
             statement.setInt(1, id);
             statement.executeUpdate();
+        }
+    }
+
+    // Mengambil tiga deadline terdekat yang belum selesai
+    public List<Task> getUpcomingTasks() throws SQLException {
+        List<Task> tasks = new ArrayList<>();
+
+        String sql = """
+            SELECT * FROM tasks
+            WHERE status != 'Selesai'
+            AND deadline >= ?
+            ORDER BY deadline ASC
+            LIMIT 3
+            """;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, LocalDate.now().toString());
+
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    Task task = new Task(
+                        result.getInt("id"),
+                        result.getString("title"),
+                        result.getString("course"),
+                        LocalDate.parse(result.getString("deadline")),
+                        result.getString("priority"),
+                        result.getString("status"),
+                        result.getInt("estimated_cost")
+                    );
+
+                    tasks.add(task);
+                }
+            }
+        }
+
+        return tasks;
+    }
+
+    // Menghitung total biaya tugas yang belum selesai
+    public int getTotalActiveTaskCost() throws SQLException {
+        String sql = """
+            SELECT COALESCE(SUM(estimated_cost), 0)
+            AS total
+            FROM tasks
+            WHERE status != 'Selesai'
+            """;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet result = statement.executeQuery()) {
+
+            return result.getInt("total");
         }
     }
 }

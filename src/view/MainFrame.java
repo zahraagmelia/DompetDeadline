@@ -14,13 +14,11 @@ public class MainFrame extends JFrame {
 
         JTabbedPane menu = new JTabbedPane();
 
-        // Halaman Dashboard
         DashboardPanel dashboard = new DashboardPanel();
 
-        // Halaman lainnya
         TransactionPanel transaksi = new TransactionPanel(dashboard);
         CategoryPanel kategori = new CategoryPanel();
-        TaskPanel tugas = new TaskPanel();
+        TaskPanel tugas = new TaskPanel(dashboard);
 
         menu.addTab("Dashboard", dashboard);
         menu.addTab("Transaksi", transaksi);

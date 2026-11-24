@@ -15,6 +15,7 @@ import java.util.List;
 public class TaskPanel extends JPanel {
 
     private final TaskRepository repository = new TaskRepository();
+    private final DashboardPanel dashboard;
 
     private JTextField txtJudul;
     private JTextField txtMataKuliah;
@@ -27,7 +28,9 @@ public class TaskPanel extends JPanel {
     private JTable tabel;
     private DefaultTableModel model;
 
-    public TaskPanel() {
+    public TaskPanel(DashboardPanel dashboard) {
+        this.dashboard = dashboard;
+
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
@@ -36,7 +39,6 @@ public class TaskPanel extends JPanel {
 
         add(judul, BorderLayout.NORTH);
 
-        // Form input tugas
         JPanel form = new JPanel(new GridLayout(6, 2, 8, 8));
 
         txtJudul = new JTextField();
@@ -74,7 +76,6 @@ public class TaskPanel extends JPanel {
         form.add(new JLabel("Estimasi Biaya (Rp):"));
         form.add(txtBiaya);
 
-        // Tombol
         JButton btnTambah = new JButton("Tambah");
         JButton btnEdit = new JButton("Edit");
         JButton btnHapus = new JButton("Hapus");
@@ -89,12 +90,10 @@ public class TaskPanel extends JPanel {
         tombol.add(btnHapus);
         tombol.add(btnBersihkan);
 
-        // Bagian form dan tombol
         JPanel bagianAtas = new JPanel(new BorderLayout(10, 10));
         bagianAtas.add(form, BorderLayout.CENTER);
         bagianAtas.add(tombol, BorderLayout.SOUTH);
 
-        // Tabel tugas
         model = new DefaultTableModel(
             new String[]{
                 "ID", "Judul", "Mata Kuliah",
@@ -110,14 +109,12 @@ public class TaskPanel extends JPanel {
         tabel = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tabel);
 
-        // Menggabungkan form dan tabel
         JPanel isi = new JPanel(new BorderLayout(10, 10));
         isi.add(bagianAtas, BorderLayout.NORTH);
         isi.add(scrollPane, BorderLayout.CENTER);
 
         add(isi, BorderLayout.CENTER);
 
-        // Aksi tombol
         btnTambah.addActionListener(e -> tambahTugas());
         btnEdit.addActionListener(e -> editTugas());
         btnHapus.addActionListener(e -> hapusTugas());
@@ -135,7 +132,6 @@ public class TaskPanel extends JPanel {
     private void tambahTugas() {
         try {
             Task task = ambilDataForm(0);
-
             repository.addTask(task);
 
             JOptionPane.showMessageDialog(
@@ -144,6 +140,7 @@ public class TaskPanel extends JPanel {
 
             bersihkanForm();
             refreshTabel();
+            dashboard.perbaruiTugas();
 
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
@@ -177,6 +174,7 @@ public class TaskPanel extends JPanel {
 
             bersihkanForm();
             refreshTabel();
+            dashboard.perbaruiTugas();
 
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
@@ -217,6 +215,7 @@ public class TaskPanel extends JPanel {
 
                 bersihkanForm();
                 refreshTabel();
+                dashboard.perbaruiTugas();
 
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(
