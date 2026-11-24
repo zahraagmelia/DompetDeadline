@@ -42,6 +42,17 @@ public class DatabaseInitializer {
             )
             """;
 
+        String createTaskReminders = """
+            CREATE TABLE IF NOT EXISTS task_reminders (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                task_id INTEGER NOT NULL,
+                deadline TEXT NOT NULL,
+                reminder_type TEXT NOT NULL,
+                notified_at TEXT NOT NULL,
+                UNIQUE(task_id, deadline, reminder_type)
+            )
+            """;
+
         try (Connection connection =
                      DatabaseConnection.getConnection();
              Statement statement = connection.createStatement()) {
@@ -49,6 +60,7 @@ public class DatabaseInitializer {
             statement.execute(createTasks);
             statement.execute(createCategories);
             statement.execute(createTransactions);
+            statement.execute(createTaskReminders);
 
             System.out.println("Database berhasil dibuat!");
 
