@@ -32,6 +32,25 @@
 - Memberikan pemberitahuan untuk tugas yang terlambat.
 - Mencegah pengingat yang sama muncul berulang kali.
 
+### 6. Mode Tampilan
+- Mode terang dan mode gelap dengan palet warna yang ditentukan.
+- Mengganti mode lewat menu **Tampilan → Mode Gelap** (atau `Ctrl+D`).
+- Pilihan mode disimpan dan dipakai lagi saat aplikasi dibuka.
+
+## Palet Warna
+
+| Variable | Light mode | Dark mode |
+| --- | --- | --- |
+| `bg-primary` | `#F5F2EA` | `#171F1A` |
+| `bg-secondary` | `#FBF7EF` | `#102821` |
+| `bg-card` | `#FFFFFF` | `#222026` |
+| `bg-subtle` | `#DCE8DF` | `#303034` |
+| `text-primary` | `#333F38` | `#F5F2EA` |
+| `text-secondary` | `#718F7C` | `#C3CEC5` |
+| `border-default` | `#DCE8DF` | `#3B4A40` |
+| `button-primary` | `#718F7C` | `#A8BFAF` |
+| `button-hover` | `#4A5C44` | `#BFD2A4` |
+
 ## Screenshot Aplikasi
 
 ### Dashboard

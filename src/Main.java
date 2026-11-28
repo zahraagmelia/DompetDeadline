@@ -1,5 +1,6 @@
 
 import javax.swing.SwingUtilities;
+import view.AppTheme;
 import view.MainFrame;
 import repository.DatabaseInitializer;
 import service.TaskReminderService;
@@ -7,6 +8,9 @@ import service.TaskReminderService;
 public class Main {
 
     public static void main(String[] args) {
+
+        // Memakai tema (light/dark) yang terakhir dipilih
+        AppTheme.load();
 
         // Membuat database dan tabel
         DatabaseInitializer.initialize();

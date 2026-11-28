@@ -27,7 +27,7 @@ public class DashboardPanel extends JPanel {
         taskRepository = new TaskRepository();
 
         setLayout(new BorderLayout(10, 10));
-        setBackground(new Color(245, 247, 250));
+        setBackground(AppTheme.bgPrimary());
 
         JLabel judul = new JLabel(
                 "DASHBOARD DOMPET DEADLINE",
@@ -48,7 +48,7 @@ public class DashboardPanel extends JPanel {
         biaya.setFont(fontInfo);
 
         JPanel informasi = new JPanel(new GridLayout(3, 1, 5, 5));
-        informasi.setBackground(new Color(245, 247, 250));
+        informasi.setBackground(AppTheme.bgPrimary());
         informasi.add(saldo);
         informasi.add(deadline);
         informasi.add(biaya);
@@ -56,7 +56,7 @@ public class DashboardPanel extends JPanel {
         grafik = new MonthlyChartPanel();
 
         JPanel isi = new JPanel(new BorderLayout(10, 10));
-        isi.setBackground(new Color(245, 247, 250));
+        isi.setBackground(AppTheme.bgPrimary());
         isi.setBorder(
                 BorderFactory.createEmptyBorder(10, 30, 15, 30)
         );
@@ -98,7 +98,9 @@ public class DashboardPanel extends JPanel {
                 );
             } else {
                 StringBuilder teks = new StringBuilder(
-                        "<html><center>Deadline Terdekat:<br>"
+                        "<html><center><font color='"
+                        + AppTheme.htmlColor(AppTheme.textPrimary())
+                        + "'>Deadline Terdekat:<br>"
                 );
 
                 for (Task tugas : daftarTugas) {
@@ -108,7 +110,7 @@ public class DashboardPanel extends JPanel {
                         .append("<br>");
                 }
 
-                teks.append("</center></html>");
+                teks.append("</font></center></html>");
                 deadline.setText(teks.toString());
             }
 

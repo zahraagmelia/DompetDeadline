@@ -11,7 +11,8 @@ public class MonthlyChartPanel extends JPanel {
 
     public MonthlyChartPanel() {
         setPreferredSize(new Dimension(500, 250));
-        setBackground(Color.WHITE);
+        putClientProperty(AppTheme.BACKGROUND_ROLE, AppTheme.CARD_KEY);
+        setBackground(AppTheme.bgCard());
     }
 
     public void setData(int pemasukan, int pengeluaran) {
@@ -35,7 +36,7 @@ public class MonthlyChartPanel extends JPanel {
         int lebar = getWidth();
         int tinggi = getHeight();
 
-        grafik.setColor(Color.BLACK);
+        grafik.setColor(AppTheme.textPrimary());
         grafik.setFont(new Font("Arial", Font.BOLD, 16));
         grafik.drawString("Grafik Pemasukan dan Pengeluaran", 20, 25);
 
@@ -59,7 +60,7 @@ public class MonthlyChartPanel extends JPanel {
         int posisiPengeluaran = 2 * lebar / 3 - lebarBatang / 2;
         int dasar = tinggi - 45;
 
-        grafik.setColor(new Color(46, 160, 90));
+        grafik.setColor(AppTheme.chartIncome());
         grafik.fillRoundRect(
                 posisiPemasukan,
                 dasar - tinggiPemasukan,
@@ -68,7 +69,7 @@ public class MonthlyChartPanel extends JPanel {
                 12, 12
         );
 
-        grafik.setColor(new Color(220, 80, 80));
+        grafik.setColor(AppTheme.chartExpense());
         grafik.fillRoundRect(
                 posisiPengeluaran,
                 dasar - tinggiPengeluaran,
@@ -77,7 +78,7 @@ public class MonthlyChartPanel extends JPanel {
                 12, 12
         );
 
-        grafik.setColor(Color.BLACK);
+        grafik.setColor(AppTheme.textPrimary());
         grafik.setFont(new Font("Arial", Font.PLAIN, 12));
 
         grafik.drawString("Pemasukan", posisiPemasukan - 5, dasar + 20);

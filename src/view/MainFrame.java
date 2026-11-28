@@ -1,7 +1,14 @@
 
 package view;
 
-import javax.swing.*;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 public class MainFrame extends JFrame {
 
@@ -26,5 +33,24 @@ public class MainFrame extends JFrame {
         menu.addTab("Tugas", tugas);
 
         add(menu);
+
+        JCheckBoxMenuItem modeGelap = new JCheckBoxMenuItem("Mode Gelap");
+        modeGelap.setSelected(AppTheme.isDark());
+        modeGelap.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK));
+        modeGelap.addActionListener(e -> {
+            AppTheme.setMode(modeGelap.isSelected()
+                    ? AppTheme.Mode.DARK
+                    : AppTheme.Mode.LIGHT);
+            AppTheme.applyTo(this);
+            dashboard.perbaruiTugas();
+        });
+
+        JMenu tampilan = new JMenu("Tampilan");
+        tampilan.add(modeGelap);
+
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(tampilan);
+        setJMenuBar(menuBar);
     }
 }
